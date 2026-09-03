@@ -5,6 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "vite --port 5173 --strictPort",
+    "dev:local": "VITE_UI_REMOTE_URL=http://localhost:5001/remoteEntry.js VITE_CATALOG_REMOTE_URL=http://localhost:5002/remoteEntry.js vite --port 5173 --strictPort",
     "build": "vue-tsc -b && vite build",
     "preview": "vite preview --port 5173 --strictPort",
     "test": "vitest run",

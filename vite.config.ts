@@ -31,16 +31,13 @@ export default defineConfig(({ mode }) => {
   const isProd = mode === 'production'
   const isTest = Boolean(process.env.VITEST)
   const base = isProd ? '/tvmaze/' : '/'
+  // Default to the deployed remotes so a fresh clone runs the host on its own.
+  // Point the VITE_* vars at localhost (or use `npm run dev:local`) when
+  // working on a remote's source.
   const uiRemote =
-    env.VITE_UI_REMOTE_URL ||
-    (isProd
-      ? 'https://abn-challenge.github.io/tvmaze-ui/remoteEntry.js'
-      : 'http://localhost:5001/remoteEntry.js')
+    env.VITE_UI_REMOTE_URL || 'https://abn-challenge.github.io/tvmaze-ui/remoteEntry.js'
   const catalogRemote =
-    env.VITE_CATALOG_REMOTE_URL ||
-    (isProd
-      ? 'https://abn-challenge.github.io/tvmaze-catalog/remoteEntry.js'
-      : 'http://localhost:5002/remoteEntry.js')
+    env.VITE_CATALOG_REMOTE_URL || 'https://abn-challenge.github.io/tvmaze-catalog/remoteEntry.js'
 
   return {
     base,

@@ -51,32 +51,38 @@ Hash routing (`createWebHashHistory`) keeps GitHub Pages simple without rewrite 
 
 ## Run locally
 
-You need three terminals (or run the remotes in the background):
+The host defaults to the **deployed** remotes, so it runs on its own — no need to
+clone or start tvmaze-ui and tvmaze-catalog:
 
 ```bash
-# 1) Design system remote
-cd ../tvmaze-ui
-npm install
-npm run dev
-
-# 2) Catalog remote
-cd ../tvmaze-catalog
-npm install
-npm run dev
-
-# 3) Host
-cd ../tvmaze
 npm install
 npm run dev
 ```
 
 Open [http://localhost:5173](http://localhost:5173).
 
-Optional remote URL overrides (see `.env.example`):
+### Developing against local remotes
+
+When you are changing a remote's source, start it and run the host in local mode.
+`dev:local` points both remotes at localhost for you:
 
 ```bash
-VITE_UI_REMOTE_URL=http://localhost:5001/remoteEntry.js
-VITE_CATALOG_REMOTE_URL=http://localhost:5002/remoteEntry.js
+# terminal 1 — design system remote (:5001)
+cd ../tvmaze-ui && npm install && npm run dev
+
+# terminal 2 — catalog remote (:5002)
+cd ../tvmaze-catalog && npm install && npm run dev
+
+# terminal 3 — host in local mode
+cd ../tvmaze && npm run dev:local
+```
+
+To make local remotes the default for your checkout, copy `.env.example` to
+`.env.local` (gitignored) and uncomment the overrides. Either mechanism works for
+mixing and matching — for example, a local UI remote against the deployed catalog:
+
+```bash
+VITE_UI_REMOTE_URL=http://localhost:5001/remoteEntry.js npm run dev
 ```
 
 ### Scripts (host)
@@ -106,4 +112,4 @@ TV show data from [TVmaze](https://www.tvmaze.com/) (CC BY-SA).
 ## Known limits
 
 - The dashboard loads Show Index page 0 (and page 1 when available) — not the entire TVmaze catalog — to stay within the public rate limit.
-- Remotes must be reachable at the configured URLs; locally that means ports `5001` and `5002`.
+- Remotes must be reachable at the configured URLs. By default those are the deployed GitHub Pages entries, so the host needs network access; with `npm run dev:local` it needs ports `5001` and `5002` instead.
