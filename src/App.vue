@@ -2,14 +2,10 @@
 import { ref, watch } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { AppShell, AppHeader, AppFooter, ResponsiveSearch } from './remotes'
+import { queryFromRoute } from './searchQuery'
 
 const router = useRouter()
 const route = useRoute()
-
-function queryFromRoute(q: unknown): string {
-  if (Array.isArray(q)) return String(q[0] ?? '')
-  return String(q ?? '')
-}
 
 const headerQuery = ref(queryFromRoute(route.query.q))
 

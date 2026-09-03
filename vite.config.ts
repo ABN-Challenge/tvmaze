@@ -5,6 +5,27 @@ import tailwindcss from '@tailwindcss/vite'
 import { federation } from '@module-federation/vite'
 import { fileURLToPath, URL } from 'node:url'
 
+const stub = (file: string) =>
+  fileURLToPath(new URL(`./src/testing/stubs/${file}`, import.meta.url))
+
+/**
+ * Host CI checks out this repo only, so unit tests resolve the federated
+ * specifiers to local stubs instead of the sibling remotes.
+ */
+const remoteStubs = {
+  'tvmaze_ui/styles': stub('noop.ts'),
+  'tvmaze_catalog/styles': stub('noop.ts'),
+  'tvmaze_ui/AppShell': stub('PassThrough.vue'),
+  'tvmaze_ui/AppHeader': stub('PassThrough.vue'),
+  'tvmaze_ui/AppFooter': stub('PassThrough.vue'),
+  'tvmaze_ui/SearchInput': stub('SearchStub.vue'),
+  'tvmaze_ui/ResponsiveSearch': stub('SearchStub.vue'),
+  'tvmaze_catalog/DashboardPage': stub('PageStub.vue'),
+  'tvmaze_catalog/SearchPage': stub('PageStub.vue'),
+  'tvmaze_catalog/ShowDetailsPage': stub('PageStub.vue'),
+  'tvmaze_catalog/NotFoundPage': stub('PageStub.vue'),
+}
+
 export default defineConfig(({ mode }) => {
   const env = loadEnv(mode, process.cwd(), '')
   const isProd = mode === 'production'
@@ -81,6 +102,19 @@ export default defineConfig(({ mode }) => {
     test: {
       environment: 'jsdom',
       globals: true,
+      alias: remoteStubs,
+      coverage: {
+        provider: 'v8',
+        reporter: ['text', 'html'],
+        include: ['src/**/*.{ts,vue}'],
+        exclude: ['src/testing/**', 'src/vite-env.d.ts'],
+        thresholds: {
+          lines: 100,
+          functions: 100,
+          branches: 100,
+          statements: 100,
+        },
+      },
     },
   }
 })

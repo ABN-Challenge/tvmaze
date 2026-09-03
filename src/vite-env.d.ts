@@ -132,3 +132,9 @@ declare module 'tvmaze_catalog/ShowDetailsPage' {
   const component: DefineComponent<object, object, unknown>
   export default component
 }
+
+declare module 'tvmaze_catalog/NotFoundPage' {
+  import type { DefineComponent } from 'vue'
+  const component: DefineComponent<object, object, unknown>
+  export default component
+}

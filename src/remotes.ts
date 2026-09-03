@@ -1,6 +1,13 @@
 import { defineAsyncComponent, type Component, h, defineComponent } from 'vue'
 
-function loadRemote(loader: () => Promise<{ default: Component }>, label: string) {
+const MAX_ATTEMPTS = 5
+const RETRY_BASE_DELAY_MS = 400
+
+/**
+ * Wraps a federated import so a slow or missing remote degrades to a plain
+ * message instead of an unmounted route. Exported for testing.
+ */
+export function loadRemote(loader: () => Promise<{ default: Component }>, label: string) {
   const PlainError = defineComponent({
     setup() {
       return () =>
@@ -24,8 +31,8 @@ function loadRemote(loader: () => Promise<{ default: Component }>, label: string
     timeout: 30000,
     onError(error, retry, fail, attempts) {
       console.warn(`[federation] failed to load ${label} (attempt ${attempts})`, error)
-      if (attempts <= 5) {
-        window.setTimeout(() => retry(), 400 * attempts)
+      if (attempts <= MAX_ATTEMPTS) {
+        window.setTimeout(() => retry(), RETRY_BASE_DELAY_MS * attempts)
       } else {
         fail()
       }
@@ -54,4 +61,8 @@ export const SearchPage = loadRemote(
 export const ShowDetailsPage = loadRemote(
   () => import('tvmaze_catalog/ShowDetailsPage'),
   'tvmaze-catalog ShowDetailsPage',
+)
+export const NotFoundPage = loadRemote(
+  () => import('tvmaze_catalog/NotFoundPage'),
+  'tvmaze-catalog NotFoundPage',
 )
