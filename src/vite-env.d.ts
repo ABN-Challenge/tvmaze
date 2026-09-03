@@ -15,6 +15,11 @@ declare module 'tvmaze_ui/styles' {
   export default styles
 }
 
+declare module 'tvmaze_catalog/styles' {
+  const styles: string
+  export default styles
+}
+
 declare module 'tvmaze_ui/theme' {
   const theme: string
   export default theme
